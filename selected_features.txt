@@ -1,0 +1,9 @@
+boosts
+damageDealt
+kills
+headshotKills
+headshot_rate
+kill_efficiency
+assists
+DBNOs
+killPoints

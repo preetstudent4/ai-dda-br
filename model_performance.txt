@@ -1,0 +1,7 @@
+MODEL PERFORMANCE SUMMARY
+==================================================
+
+Random Forest Model:
+  MAE:  0.1604
+  RMSE: 0.2001
+  R²:   0.5171
