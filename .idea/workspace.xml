@@ -6,10 +6,9 @@
   <component name="ChangeListManager">
     <list default="true" id="4b576a4f-4574-45f3-a384-23939ec04884" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api_server.py" beforeDir="false" afterPath="$PROJECT_DIR$/api_server.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/dda_ai_pubg.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/dda_ai_pubg.ipynb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/feature_scaler.pkl" beforeDir="false" afterPath="$PROJECT_DIR$/feature_scaler.pkl" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/selected_features.pkl" beforeDir="false" afterPath="$PROJECT_DIR$/selected_features.pkl" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/xgb_difficulty_model.pkl" beforeDir="false" afterPath="$PROJECT_DIR$/xgb_difficulty_model.pkl" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/playerdata_analysis.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/playerdata_analysis.ipynb" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -19,8 +18,8 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Jupyter Notebook" />
         <option value="Python Script" />
+        <option value="Jupyter Notebook" />
       </list>
     </option>
   </component>
@@ -35,19 +34,19 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "Python.2363846_DeepLearningPart1.executor": "Run",
-    "Python.api_server.executor": "Run",
-    "Python.mlm4dda_test.executor": "Run",
-    "Python.testing.executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "main"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;Python.2363846_DeepLearningPart1.executor&quot;: &quot;Run&quot;,
+    &quot;Python.api_server.executor&quot;: &quot;Run&quot;,
+    &quot;Python.mlm4dda_test.executor&quot;: &quot;Run&quot;,
+    &quot;Python.testing.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\Owner\Desktop\Comp Sci Year 3\CS3072 Final Year Project\Python" />

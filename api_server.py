@@ -1,10 +1,10 @@
 import os
+import pickle
+import joblib
+import pandas as pd
 
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-import joblib
-import pickle
-import pandas as pd
 
 app = Flask(__name__)
 CORS(app)
@@ -29,8 +29,7 @@ print(f"Model loaded with {len(feature_names)} features")
 # -----------------------------
 
 def classify_skill_level(win_place_perc):
-    """Convert predicted win placement to skill level"""
-
+    """Convert predicted win placement to skill level."""
     if win_place_perc < 0.25:
         return "Beginner", 1
     elif win_place_perc < 0.50:
@@ -46,10 +45,8 @@ def classify_skill_level(win_place_perc):
 # -----------------------------
 
 def get_difficulty_adjustment(skill_level):
-    """Return gameplay adjustments for Unity"""
-
+    """Return gameplay adjustments for Unity."""
     adjustments = {
-
         "Beginner": {
             "enemyAccuracy": 0.6,
             "enemyHealth": 0.8,
@@ -61,7 +58,6 @@ def get_difficulty_adjustment(skill_level):
             "playerDamageMultiplier": 1.2,
             "respawnTime": 0.7
         },
-
         "Intermediate": {
             "enemyAccuracy": 0.85,
             "enemyHealth": 1.0,
@@ -73,7 +69,6 @@ def get_difficulty_adjustment(skill_level):
             "playerDamageMultiplier": 1.0,
             "respawnTime": 1.0
         },
-
         "Advanced": {
             "enemyAccuracy": 1.0,
             "enemyHealth": 1.2,
@@ -85,7 +80,6 @@ def get_difficulty_adjustment(skill_level):
             "playerDamageMultiplier": 0.9,
             "respawnTime": 1.2
         },
-
         "Expert": {
             "enemyAccuracy": 1.2,
             "enemyHealth": 1.5,
@@ -107,23 +101,48 @@ def get_difficulty_adjustment(skill_level):
 # -----------------------------
 
 def compute_features(player_data):
-    """Generate ML features from raw player stats"""
+    """Generate ML features from raw player stats."""
+    data = dict(player_data)  # avoid mutating original request data
 
-    kills = player_data.get("kills", 0)
-    assists = player_data.get("assists", 0)
-    damage = player_data.get("damageDealt", 0)
-    boosts = player_data.get("boosts", 0)
-    DBNOs = player_data.get("DBNOs", 0)
-    headshots = player_data.get("headshotKills", 0)
+    kills = float(data.get("kills", 0))
+    damage = float(data.get("damageDealt", 0))
+    boosts = float(data.get("boosts", 0))
+    headshots = float(data.get("headshotKills", 0))
 
-    player_data["kill_efficiency"] = kills / (damage + 1)
-    player_data["headshot_rate"] = headshots / (kills + 1)
-    player_data["assist_ratio"] = assists / (kills + assists + 1)
-    player_data["DBNO_conversion"] = kills / (DBNOs + 1)
-    player_data["boost_efficiency"] = (kills + assists) / (boosts + 1)
-    player_data["combat_score"] = kills + assists + (damage / 100)
+    data["kill_efficiency"] = kills / (damage + 1)
+    data["headshot_rate"] = headshots / (kills + 1)
+    data["boost_efficiency"] = kills / (boosts + 1)
+    data["combat_score"] = kills + (damage / 100)
 
-    return player_data
+    return data
+
+
+# -----------------------------
+# Input Preparation
+# -----------------------------
+
+def prepare_features(player_data):
+    """
+    Build a DataFrame with exactly the same feature names and order
+    used during training.
+    """
+    engineered_data = compute_features(player_data)
+
+    # Create single-row DataFrame
+    features_df = pd.DataFrame([engineered_data])
+
+    # Add any missing expected columns with default 0
+    for feature in feature_names:
+        if feature not in features_df.columns:
+            features_df[feature] = 0
+
+    # Keep only training features and correct order
+    features_df = features_df[feature_names]
+
+    # Ensure numeric values
+    features_df = features_df.apply(pd.to_numeric, errors="coerce").fillna(0)
+
+    return features_df
 
 
 # -----------------------------
@@ -144,11 +163,9 @@ def health_check():
 
 @app.route("/predict", methods=["POST"])
 def predict_difficulty():
-
     try:
-
         data = request.get_json()
-        # print("Line 149: ", data)
+
         if not data:
             return jsonify({
                 "success": False,
@@ -157,18 +174,19 @@ def predict_difficulty():
 
         print("Incoming player data:", data)
 
-        player_data = compute_features(data)
-        # print(player_data)
+        # Step 1: Prepare named feature DataFrame
+        features_df = prepare_features(data)
 
-        features_df = pd.DataFrame([player_data])
-        features_df = features_df[feature_names]
-
+        # Step 2: Scale features
         features_scaled = scaler.transform(features_df)
 
-        prediction = model.predict(features_scaled)[0]
+        # Step 3: Convert scaled array back into DataFrame with feature names
+        features_scaled_df = pd.DataFrame(features_scaled, columns=feature_names)
+
+        # Step 4: Predict using named columns
+        prediction = model.predict(features_scaled_df)[0]
 
         skill_level, skill_score = classify_skill_level(prediction)
-
         adjustments = get_difficulty_adjustment(skill_level)
 
         response = {
@@ -182,7 +200,6 @@ def predict_difficulty():
         return jsonify(response), 200
 
     except Exception as e:
-
         print("Prediction error:", str(e))
 
         return jsonify({
@@ -191,14 +208,15 @@ def predict_difficulty():
             "message": "Error processing player data"
         }), 500
 
+
 # -----------------------------
 # Run Server
 # -----------------------------
 
 if __name__ == "__main__":
-
     print("Starting Dynamic Difficulty Adjustment API...")
     print("API running on http://localhost:5000")
+
     port = int(os.environ.get("PORT", 5000))
     app.run(
         host="0.0.0.0",
